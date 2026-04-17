@@ -1,0 +1,50 @@
+services:
+
+  # Base de donnees PostgreSQL
+  db:
+    image: postgres:15-alpine
+    container_name: talend_db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB:       talend_scheduler
+      POSTGRES_USER:     postgres
+      POSTGRES_PASSWORD: admin
+    ports:
+      - "5433:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  # Application Talend Orchestrator (image depuis Docker Hub)
+  app:
+    image: irqnk/talend-orchestrator:latest
+    container_name: talend_app
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "8001:8001"
+    environment:
+      DB_HOST:     db
+      DB_PORT:     5432
+      DB_NAME:     talend_scheduler
+      DB_USER:     postgres
+      DB_PASSWORD: admin
+      SECRET_KEY:  changez-moi-en-production
+      WINDOWS_AGENT_URL:    http://host.docker.internal:8002
+      WINDOWS_AGENT_SECRET: talend-agent-secret
+    volumes:
+      - ./deployments:/app/deployments
+      - ./job:/app/job
+      - ./logs:/app/logs
+      - ./upload_library:/app/upload_library
+      - ./uploads:/app/uploads
+      - ./icone_talend:/app/icone_talend
+
+volumes:
+  db_data:
