@@ -40,11 +40,12 @@ if %errorlevel% neq 0 (
 echo       OK
 
 echo [3/3] Demarrage de l'agent Windows...
-if exist "agent_windows.bat" (
-    start "Talend Agent Windows" /min cmd /k agent_windows.bat
+if exist "agent_windows.py" (
+    pip install --quiet flask waitress requests
+    start "Talend Agent Windows" /min cmd /k python agent_windows.py
     echo       OK
 ) else (
-    echo       agent_windows.bat absent - ignore
+    echo       agent_windows.py absent - ignore
 )
 
 echo.
