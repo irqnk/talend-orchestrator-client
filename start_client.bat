@@ -25,12 +25,21 @@ if %errorlevel% neq 0 (
     exit /b 1
 )
 
-REM --- Connexion Docker Hub (necessaire pour image privee) ---
+REM --- Connexion Docker Hub via token (stocke dans .docker_token) ---
 echo [1/4] Connexion a Docker Hub...
-docker login
+if exist ".docker_token" (
+    for /f "tokens=1,2" %%a in (.docker_token) do (
+        set "DOCKER_USER=%%a"
+        set "DOCKER_TOKEN=%%b"
+    )
+    echo %DOCKER_TOKEN%| docker login -u "%DOCKER_USER%" --password-stdin
+) else (
+    echo [AVERTISSEMENT] Fichier .docker_token absent, connexion manuelle...
+    echo Creez un fichier .docker_token avec : votre_user  votre_token
+    docker login
+)
 if %errorlevel% neq 0 (
     echo [ERREUR] Connexion Docker Hub echouee.
-    echo Creez un compte sur https://hub.docker.com puis contactez l'administrateur.
     pause
     exit /b 1
 )
