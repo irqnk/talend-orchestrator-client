@@ -28,11 +28,13 @@ if %errorlevel% neq 0 (
 REM --- Connexion Docker Hub via token (stocke dans .docker_token) ---
 echo [1/4] Connexion a Docker Hub...
 if exist ".docker_token" (
-    for /f "tokens=1,2" %%a in (.docker_token) do (
+    setlocal enabledelayedexpansion
+    for /f "usebackq tokens=1,2" %%a in (".docker_token") do (
         set "DOCKER_USER=%%a"
         set "DOCKER_TOKEN=%%b"
     )
-    echo %DOCKER_TOKEN%| docker login -u "%DOCKER_USER%" --password-stdin
+    echo !DOCKER_TOKEN!| docker login -u "!DOCKER_USER!" --password-stdin
+    endlocal
 ) else (
     echo [AVERTISSEMENT] Fichier .docker_token absent, connexion manuelle...
     echo Creez un fichier .docker_token avec : votre_user  votre_token
