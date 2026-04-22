@@ -41,10 +41,10 @@ docker-compose -f docker-compose.prod.yml up -d
 
 Si vous n'avez pas Git, téléchargez les fichiers manuellement :
 
-**Windows** — ouvrez `cmd` et copiez ces 3 commandes :
+**Windows** — ouvrez `cmd` et copiez ces commandes :
 ```bash
 curl -O https://raw.githubusercontent.com/irqnk/talend-orchestrator-client/main/docker-compose.prod.yml
-curl -O https://raw.githubusercontent.com/irqnk/talend-orchestrator-client/main/agent_windows.bat
+curl -O https://raw.githubusercontent.com/irqnk/talend-orchestrator-client/main/agent_windows.py
 curl -O https://raw.githubusercontent.com/irqnk/talend-orchestrator-client/main/start_client.bat
 start_client.bat
 ```
